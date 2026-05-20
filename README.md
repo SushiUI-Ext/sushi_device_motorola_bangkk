@@ -8,6 +8,7 @@ Configurations for this SushiUIext device written in Makefile and Shell.
 Copyright © 2023 Motorola Mobility LLC. All rights reserved.
 
 Copyright (c) 2026 SushiUI / SushiUI Extended. All rights reserved.
+
 ---
 If you are installing SushiUI on your device,
 ```Code
