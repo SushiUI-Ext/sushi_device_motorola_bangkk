@@ -3,7 +3,7 @@
 all: sushi-prepare sushi-make sushi-compact
 
 sushi-prepare:
-	@echo ". ./envsetup.sh" >> ~/.bashrc
+	@echo ". ./envsetup.sh" >> ~/.sushirc
 	@mkdir -p module
 	@mkdir -p module/system
 	@mkdir -p module/system/product
