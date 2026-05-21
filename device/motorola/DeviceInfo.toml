@@ -1,0 +1,24 @@
+title = "About the bangkk device"
+
+[module]
+minSdk = 36
+maxSdk = 0
+vendor = "motorola"
+requiresCRom = true
+
+[device]
+firstSdk = 33
+latestSdk = 35
+vendor = "motorola"
+manufacturer = "Motorola"
+cpu = "Qualcomm Snapdragon 695 5G"
+gpu = "Adreno 619"
+battery = "5000mAh"
+charge = "33W TurboPower"
+arch = ["arm64-v8a", "armeabi-v7a", "armeabi"]
+
+[build]
+ssh_repo = "git@github.com:SushiUI-Ext/sushi_device_motorola_bangkk.git"
+https_repo = "https://github.com/SushiUI-Ext/sushi_device_motorola_bangkk.git"
+gh_cli_repo = "SushiUI-Ext/sushi_device_motorola_bangkk"
+make_options = ["all", "sushi-prepare", "sushi-make", "sushi-compact"]
