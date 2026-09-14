@@ -19,3 +19,21 @@ If you are installing SushiUI on your device,
 * you blame us in any way for what happens to your device, we will laugh at you.
 * BOOM! goes the dynamite
 ```
+
+## Building on bangkk
+after all
+```bash
+. ./envsetup.sh
+```
+or
+``bash
+. ./beta-envsetup.sh
+```
+
+```bash
+make
+```
+or beta
+```bash
+make BETA=1
+```

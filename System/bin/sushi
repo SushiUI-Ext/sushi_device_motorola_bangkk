@@ -1,0 +1,19 @@
+#!/system/bin/sh
+
+if [ ! "$#" -lt 1 ]; then
+	echo "sushi version 0.1"
+	echo "Available commands:"
+	echo
+	echo "reboot"
+	echo "shutdown"
+	exit 1
+fi
+
+case "$1" in
+	reboot)
+	 reboot
+	  ;;
+	shutdown)
+	 shutdown
+	  ;;
+esac

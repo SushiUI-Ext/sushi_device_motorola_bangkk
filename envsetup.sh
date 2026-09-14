@@ -28,3 +28,29 @@ sushidevinfo() {
   echo -e "A/B: $AB"
   echo -e "Architectures: $ARCHITECTURES"
 }
+
+smake() {
+    local -a MAKEFLAGS=()
+
+    local arg
+    local has_jobs=0
+
+    for arg in "$@"; do
+        case "$arg" in
+            -j|--jobs)
+                has_jobs=1
+                ;;
+            -j[0-9]*|--jobs=[0-9]*)
+                has_jobs=1
+                ;;
+        esac
+    done
+
+    if (( !has_jobs )); then
+        MAKEFLAGS+=("-j$(nproc)")
+    fi
+
+    command make "${MAKEFLAGS[@]}" "$@"
+}
+
+
