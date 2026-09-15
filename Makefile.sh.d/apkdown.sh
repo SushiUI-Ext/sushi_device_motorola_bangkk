@@ -18,4 +18,4 @@ mkdir -p "${nzoutput}"/system/product/priv-app/F-Droid
 curl -fsSL https://f-droid.org/F-Droid.apk -o  "${nzoutput}"/system/product/priv-app/F-Droid/F-Droid.apk
 echo "W: F-Droid Privileged Extension not on ApkDown repo. Installing from website..."
 mkdir -p "${nzoutput}"/system/product/priv-app/F-Droid-Priv
-curl -fsSL https://f-droid.org/repo/org.fdroid.fdroid.privileged_2130.apk -o "${nzoutput}"/system/product/priv-app/F-Droid/F-Droid.apk
+curl -fsSL https://f-droid.org/repo/org.fdroid.fdroid.privileged_2130.apk -o "${nzoutput}"/system/product/priv-app/F-Droid-Priv/F-Droid-Priv.apk
