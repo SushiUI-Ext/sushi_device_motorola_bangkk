@@ -1,3 +1,9 @@
 device/nzoutput
 device/output
-
+*.tmp
+**.tmp
+.vscode
+.vscode-oss
+*.env
+*.env*
+.env*
