@@ -37,3 +37,7 @@ or beta
 ```bash
 make BETA=1
 ```
+
+# Maintainers of this device
+
+[rebangkkuser](https://github.com/rebangkkuser) 
