@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 if [ "$BETA" = 1 ]; then
-	echo "Warning: beta mode is with the value 1."
-	. ./beta-envsetup.sh
+	echo "Warning: beta mode is with the value 1, but is disabled. Not using beta"
+	. ./envsetup.sh
 elif [ "$BETA" = 0 ]; then
 	. ./envsetup.sh
 elif [ -z "$BETA" ]; then
