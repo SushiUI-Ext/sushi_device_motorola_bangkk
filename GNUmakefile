@@ -20,7 +20,7 @@ Q := @
 endif
 
 ifeq ($(BETA),1)
-ENVSETUP := beta-envsetup.sh
+$(error Beta not available. Exiting)
 else
 ENVSETUP := envsetup.sh
 endif
