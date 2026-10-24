@@ -14,7 +14,7 @@ maxSushiSDK := 37
 CPU := "QTI SM6375"
 RAM := "8GB"
 UFSTYPE := "UFS 2.2"
-RAMTYPE := "LPDDR5X"
+RAMTYPE := "LPDDR4X"
 GPU := "Adreno 619"
 
 # FW
