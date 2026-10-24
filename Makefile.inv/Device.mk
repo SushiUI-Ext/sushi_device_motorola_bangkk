@@ -18,8 +18,8 @@ RAMTYPE := "LPDDR4X"
 GPU := "Adreno 619"
 
 # FW
-latest := V1TCS35H.88-16-8
-oldrel := V1TCS35H.88-16-5
+latest := V1TCS35H.88-16-9
+oldrel := V1TCS35H.88-16-8
 model_numb := XT2347-1
 
 # connections
