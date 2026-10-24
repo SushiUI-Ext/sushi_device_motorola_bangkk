@@ -6,12 +6,12 @@ model := "Moto G84 5G"
 
 firstSDK := 33
 lastSDK := 35
-minSushiSDK := 36
+minSushiSDK := 37
 maxSushiSDK := 37
 
 # hardware
 
-CPU := "QTI SN6375"
+CPU := "QTI SM6375"
 RAM := "8GB"
 UFSTYPE := "UFS 2.2"
 RAMTYPE := "LPDDR5X"

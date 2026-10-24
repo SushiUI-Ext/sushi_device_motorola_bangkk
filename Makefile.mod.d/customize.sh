@@ -6,10 +6,10 @@ echo "Sushi version: 1.1.2"
 echo "Bugs: beta not compiling"
 echo "Release channel: stable"
 
-echo "I: Checking SDK (minimum 36)"
+echo "I: Checking SDK (minimum 37)"
 SDK="$(getprop ro.build.version.sdk)"
 
-if [ "$SDK" -ge 36 ]; then
+if [ "$SDK" -ge 37 ]; then
     :
 else
     echo "Wrong SDK, sorry"
