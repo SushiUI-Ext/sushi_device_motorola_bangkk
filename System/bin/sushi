@@ -1,19 +1,28 @@
 #!/system/bin/sh
 
-if [ ! "$#" -lt 1 ]; then
-	echo "sushi version 0.1"
-	echo "Available commands:"
-	echo
-	echo "reboot"
-	echo "shutdown"
+usage() {
+	echo "usage: sushi {version|info|reboot [recovery|bootloader]|shutdown}" >&2
 	exit 1
-fi
+}
+
+[ "$#" -ge 1 ] || usage
 
 case "$1" in
+	version)
+		echo "sushi 0.2 ($(getprop ro.sushiui.release))"
+		;;
+	info)
+		echo "device:  $(getprop ro.sushiui.dev)"
+		echo "release: $(getprop ro.sushiui.release)"
+		echo "android: $(getprop ro.build.version.release) (sdk $(getprop ro.build.version.sdk))"
+		;;
 	reboot)
-	 reboot
-	  ;;
+		exec reboot ${2:+"$2"}
+		;;
 	shutdown)
-	 shutdown
-	  ;;
+		exec reboot -p
+		;;
+	*)
+		usage
+		;;
 esac

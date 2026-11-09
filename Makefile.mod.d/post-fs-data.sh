@@ -1,5 +1,7 @@
 #!/system/bin/sh
 
-resetprop -n ro.lineage.version SushiUi-EXT-1.1.2-STABLE
-resetprop -n ro.sushiui.dev bangkk
-resetprop -n ro.sushiui.release 1.1.2-OFFICIAL
+resetprop -n ro.lineage.version SushiUi-EXT-@VERSION@-STABLE
+resetprop -n ro.sushiui.dev @DEVICE@
+resetprop -n ro.sushiui.release @VERSION@-OFFICIAL
+resetprop -n ro.sushi.maintainer @MAINTAINER@
+resetprop -n ro.sushi.builddate @BUILDDATE@

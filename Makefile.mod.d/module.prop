@@ -1,6 +1,7 @@
-id=sushiui.extended.mm.bangkk
+id=sushiui.extended.mm.@DEVICE@
 name=SushiUI Extended
-version=1.1.2
+version=@VERSION@
+versionCode=@VERSION_CODE@
 author=bangkkuser, SushiUI team
 description=Personalization Magisk module.
-updateJson=https://raw.githubusercontent.com/SushiUI-Ext/sushi_device_motorola_bangkk/refs/heads/main/ota/update.json
+updateJson=https://raw.githubusercontent.com/SushiUI-Ext/sushi_device_motorola_@DEVICE@/refs/heads/main/ota/update.json

@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SushiUI Extended</title>
+<style>
+:root { color-scheme: light dark; --bg:#fff; --fg:#111; --mut:#666; --card:#f3f3f3; --ok:#1a7f37; --bad:#cf222e; --warn:#9a6700; }
+@media (prefers-color-scheme: dark) {
+	:root { --bg:#111; --fg:#eee; --mut:#999; --card:#1e1e1e; --ok:#3fb950; --bad:#f85149; --warn:#d29922; }
+}
+body { margin:0; padding:24px 16px; background:var(--bg); color:var(--fg); font:16px system-ui,sans-serif; }
+h1 { font-size:1.4rem; margin:0 0 8px; }
+h2 { font-size:1rem; margin:24px 0 8px; color:var(--mut); font-weight:600; }
+.card { background:var(--card); border-radius:16px; padding:4px 16px; }
+.row { display:flex; justify-content:space-between; gap:16px; padding:12px 0; border-bottom:1px solid #8883; }
+.row:last-child { border-bottom:0; }
+.k { color:var(--mut); }
+.v { font-weight:600; text-align:right; word-break:break-word; }
+.ok { color:var(--ok); }
+.bad { color:var(--bad); }
+.warn { color:var(--warn); }
+.note { color:var(--mut); font-size:.85rem; margin:8px 4px 0; }
+</style>
+</head>
+<body>
+<h1>🍣 SushiUI Extended</h1>
+<div id="out"></div>
+<script>
+function exec(cmd) {
+	return new Promise((resolve, reject) => {
+		const cb = `exec_cb_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+		window[cb] = (errno, stdout, stderr) => {
+			delete window[cb];
+			resolve({ errno, stdout, stderr });
+		};
+		try {
+			ksu.exec(cmd, "{}", cb);
+		} catch (e) {
+			delete window[cb];
+			reject(e);
+		}
+	});
+}
+
+// kernel requirements per root implementation.
+// cfg: always required (=y). hook: only checked in kprobe hook mode.
+const IMPL = {
+	apatch: {
+		name: "APatch",
+		cfg: ["CONFIG_KALLSYMS", "CONFIG_KALLSYMS_ALL"],
+		notes: ["ARM64 only. KALLSYMS_ALL=n has initial support only."],
+	},
+	kernelsu: {
+		name: "KernelSU",
+		cfg: ["CONFIG_KSU"],
+		hook: ["CONFIG_KPROBES", "CONFIG_HAVE_KPROBES", "CONFIG_KPROBE_EVENTS"],
+		ksu: true,
+	},
+	ksunext: {
+		name: "KernelSU Next",
+		cfg: ["CONFIG_KSU"],
+		hook: ["CONFIG_KPROBES", "CONFIG_KPROBE_EVENTS", "CONFIG_KSU_KPROBE_HOOKS"],
+		ksu: true,
+	},
+};
+
+const COLLECT = [
+	'echo "android=$(getprop ro.build.version.release)"',
+	'echo "sdk=$(getprop ro.build.version.sdk)"',
+	'echo "kernel=$(uname -r)"',
+	'echo "dev=$(getprop ro.sushiui.dev)"',
+	'echo "release=$(getprop ro.sushiui.release)"',
+	'echo "builddate=$(getprop ro.sushi.builddate)"',
+	'echo "maintainer=$(getprop ro.sushi.maintainer)"',
+	'if [ -e /data/adb/apd ] || [ -d /data/adb/ap ]; then echo root=apatch;',
+	'elif [ -e /data/adb/ksud ]; then echo root=ksu; else echo root=other; fi',
+	'echo "pkgs=$(pm list packages 2>/dev/null | grep -E "me.weishu.kernelsu|com.rifsxd.ksunext" | tr "\\n" " ")"',
+	'[ -r /proc/config.gz ] && echo cfgfile=yes || echo cfgfile=no',
+].join("\n");
+
+const parse = (s) =>
+	Object.fromEntries(
+		s.split("\n").filter((l) => l.includes("=")).map((l) => {
+			const i = l.indexOf("=");
+			return [l.slice(0, i), l.slice(i + 1).trim()];
+		})
+	);
+
+const fmtDate = (s) =>
+	/^\d{8}$/.test(s) ? `${s.slice(0, 4)}-${s.slice(4, 6)}-${s.slice(6)}` : s || "unknown";
+
+function card(title, rows, note) {
+	const out = document.getElementById("out");
+	const h = document.createElement("h2");
+	h.textContent = title;
+	out.append(h);
+	const box = document.createElement("div");
+	box.className = "card";
+	for (const [k, v, cls] of rows) {
+		const row = document.createElement("div");
+		row.className = "row";
+		const key = document.createElement("span");
+		key.className = "k";
+		key.textContent = k;
+		const val = document.createElement("span");
+		val.className = "v" + (cls ? " " + cls : "");
+		val.textContent = v;
+		row.append(key, val);
+		box.append(row);
+	}
+	out.append(box);
+	if (note) {
+		const p = document.createElement("p");
+		p.className = "note";
+		p.textContent = note;
+		out.append(p);
+	}
+}
+
+async function readConfig(keys) {
+	const re = `^(# )?(${keys.join("|")})([= ])`;
+	const out = (await exec(`zcat /proc/config.gz | grep -E '${re}'`)).stdout;
+	const val = {};
+	for (const line of out.split("\n")) {
+		let m = line.match(/^(CONFIG_\w+)=(.*)$/);
+		if (m) { val[m[1]] = m[2]; continue; }
+		m = line.match(/^# (CONFIG_\w+) is not set$/);
+		if (m) val[m[1]] = "n";
+	}
+	return val;
+}
+
+(async () => {
+	if (typeof ksu === "undefined") {
+		card("Error", [["WebUI", "open this page from your root manager"]]);
+		return;
+	}
+
+	const d = parse((await exec(COLLECT)).stdout);
+
+	let impl = null, fork = false;
+	if (d.root === "apatch") {
+		impl = IMPL.apatch;
+	} else if (d.root === "ksu") {
+		if (d.pkgs.includes("com.rifsxd.ksunext")) {
+			impl = IMPL.ksunext;
+		} else {
+			impl = IMPL.kernelsu;
+			fork = !d.pkgs.includes("me.weishu.kernelsu");
+		}
+	}
+
+	const official = /-OFFICIAL$/.test(d.release);
+	card("SushiUI", [
+		["Version", d.release.replace(/-OFFICIAL$/, "") || "unknown"],
+		["Device", d.dev || "unknown"],
+		["Build type", d.release ? (official ? "Official" : "Unofficial") : "unknown"],
+		["Build date", fmtDate(d.builddate)],
+		["Maintainer", d.maintainer || "unknown"],
+	]);
+
+	card("System", [
+		["Android", `${d.android} (SDK ${d.sdk})`],
+		["Kernel", d.kernel],
+		["Root", impl ? impl.name + (fork ? " (fork)" : "") : "Other"],
+	]);
+
+	if (!impl) return;
+
+	const notes = [...(impl.notes || [])];
+	const rows = [];
+
+	if (d.cfgfile !== "yes") {
+		rows.push(["Kernel config", "not exposed (CONFIG_IKCONFIG_PROC)", "warn"]);
+	} else {
+		const keys = [...impl.cfg, ...(impl.hook || [])];
+		const cfg = await readConfig(keys);
+		const show = (key) => {
+			const v = cfg[key];
+			if (v === undefined) return [key, "missing", "bad"];
+			return [key, v, v === "y" ? "ok" : "bad"];
+		};
+
+		for (const k of impl.cfg) rows.push(show(k));
+
+		if (impl.hook) {
+			if (cfg.CONFIG_KPROBES !== "y") {
+				rows.push(["Hook mode", "manual (KPROBES off)", "ok"]);
+			} else {
+				rows.push(["Hook mode", "kprobe", "ok"]);
+				for (const k of impl.hook) rows.push(show(k));
+				notes.push("If this kernel uses manual hooks, CONFIG_KPROBES should be off, otherwise volume-down at boot can trigger safe mode.");
+			}
+		}
+	}
+
+	if (impl.ksu) {
+		const m = d.kernel.match(/^(\d+)\.(\d+)/);
+		if (m && (+m[1] < 5 || (+m[1] === 5 && +m[2] < 9))) {
+			notes.push("Kernel < 5.9: module unmount needs path_umount backported to fs/namespace.c.");
+		}
+		if (fork) notes.push("Fork not catalogued: showing base KernelSU requirements.");
+	}
+
+	card(`${impl.name} kernel requirements`, rows, notes.join(" "));
+})();
+</script>
+</body>
+</html>
