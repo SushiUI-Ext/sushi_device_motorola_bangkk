@@ -1,7 +1,10 @@
 #!/system/bin/sh
 
-resetprop -n ro.lineage.version SushiUi-EXT-@VERSION@-STABLE
-resetprop -n ro.sushiui.dev @DEVICE@
-resetprop -n ro.sushiui.release @VERSION@-OFFICIAL
-resetprop -n ro.sushi.maintainer @MAINTAINER@
-resetprop -n ro.sushi.builddate @BUILDDATE@
+MODDIR="${0%/*}"
+. "$MODDIR/sushi.env"
+
+resetprop -n ro.lineage.version "SushiUi-EXT-${SUSHI_VERSION}-STABLE"
+resetprop -n ro.sushiui.dev "$SUSHI_DEVICE"
+resetprop -n ro.sushiui.release "$SUSHI_RELEASE"
+resetprop -n ro.sushi.maintainer "$SUSHI_MAINTAINER"
+resetprop -n ro.sushi.builddate "$SUSHI_BUILDDATE"

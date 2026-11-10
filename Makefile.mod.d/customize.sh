@@ -1,18 +1,21 @@
 #!/system/bin/sh
 
+. "$MODPATH/sushi.env"
+
 ui_print "This installation:"
-ui_print "Device: motorola-@DEVICE@"
-ui_print "Sushi version: @VERSION@"
-ui_print "Maintainer: @MAINTAINER@"
+ui_print "Device: motorola-$SUSHI_DEVICE"
+ui_print "Sushi version: $SUSHI_VERSION"
+ui_print "Release: $SUSHI_RELEASE"
+ui_print "Maintainer: $SUSHI_MAINTAINER"
 ui_print "Release channel: stable"
 
-ui_print "I: Checking SDK (minimum @MIN_SDK@)"
+ui_print "I: Checking SDK (minimum $SUSHI_MIN_SDK)"
 SDK="$(getprop ro.build.version.sdk)"
-[ "$SDK" -ge @MIN_SDK@ ] || abort "Wrong SDK ($SDK), need >= @MIN_SDK@"
+[ "$SDK" -ge "$SUSHI_MIN_SDK" ] || abort "Wrong SDK ($SDK), need >= $SUSHI_MIN_SDK"
 
 ui_print "I: Checking device"
 DEVICE="$(getprop ro.product.device)"
-[ "$DEVICE" = "@DEVICE@" ] || abort "Wrong device ($DEVICE)"
+[ "$DEVICE" = "$SUSHI_DEVICE" ] || abort "Wrong device ($DEVICE)"
 
 ui_print "I: Checking Xposed framework"
 MODS=/data/adb/modules

@@ -3,7 +3,11 @@
 
 Configurations for this SushiUIext device written in Makefile and Shell.
 
+
+
 ![bangkk](https://raw.githubusercontent.com/SushiUI-Ext/sushi_device_motorola_bangkk/refs/heads/main/bangkk.png)
+
+
 
 Copyright © 2023 Motorola Mobility LLC. All rights reserved.
 
@@ -21,23 +25,19 @@ If you are installing SushiUI on your device,
 ```
 
 ## Building on bangkk
-after all
 ```bash
 . ./envsetup.sh
-```
-or
-``bash
-. ./beta-envsetup.sh
+smake
 ```
 
+Build options:
 ```bash
-make
+smake MAINTAINER=name
+smake OFFICIAL=1 MAINTAINER=name
 ```
-or beta
-```bash
-make BETA=1
-```
+
+`MAINTAINER` defaults to the output of `whoami`. `OFFICIAL` defaults to `0`.
 
 # Maintainers of this device
 
-[rebangkkuser](https://github.com/rebangkkuser) 
+[rebangkkuser](https://github.com/rebangkkuser)

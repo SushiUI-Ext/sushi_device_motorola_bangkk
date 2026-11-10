@@ -6,7 +6,7 @@ model := "Moto G84 5G"
 
 firstSDK := 33
 lastSDK := 35
-minSushiSDK := 37
+minSushiSDK := 36
 maxSushiSDK := 37
 
 # hardware

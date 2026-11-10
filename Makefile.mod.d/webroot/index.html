@@ -43,8 +43,6 @@ function exec(cmd) {
 	});
 }
 
-// kernel requirements per root implementation.
-// cfg: always required (=y). hook: only checked in kprobe hook mode.
 const IMPL = {
 	apatch: {
 		name: "APatch",
@@ -153,7 +151,7 @@ async function readConfig(keys) {
 
 	const official = /-OFFICIAL$/.test(d.release);
 	card("SushiUI", [
-		["Version", d.release.replace(/-OFFICIAL$/, "") || "unknown"],
+		["Version", d.release.replace(/-(UN)?OFFICIAL$/, "") || "unknown"],
 		["Device", d.dev || "unknown"],
 		["Build type", d.release ? (official ? "Official" : "Unofficial") : "unknown"],
 		["Build date", fmtDate(d.builddate)],
