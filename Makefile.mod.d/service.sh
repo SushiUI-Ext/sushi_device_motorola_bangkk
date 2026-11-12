@@ -1,3 +1,4 @@
 #!/system/bin/sh
 
-echo "hi" >/data/local/tmp/sushi.log
+
+echo "SushiUI detected full Android boot on $(date)" >/data/local/tmp/sushiui_ext.log
