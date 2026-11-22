@@ -1,0 +1,8 @@
+# Binary files
+*.apk binary
+*.zip binary
+
+# Text files
+*.sh linguist-language=Shell
+GNUmakefile linguist-language=Makefile
+*.html linguist-language=HTML
