@@ -55,4 +55,36 @@ smake() {
     command make "${MAKEFLAGS[@]}" "$@"
 }
 
+submit2releases() {
+    read -rp "Where are your releases directory? " reldir
 
+    [ ! -d "$reldir" ] && {
+        echo "The releases repository does not exist! Aborting."
+        exit 1
+    }
+
+    cp device/output/*.zip "$reldir"/devices/"$DEVICE"/ || exit 1
+
+    cd "$reldir" || exit 1
+
+    read -rp "You want to commit changes? [y/n]: " yn
+
+    case "$yn" in
+        y|Y)
+            echo "Adding actual directory to Git stage..."
+            git add .
+            echo "Committing..."
+            git commit -m "devices: Add $DEVICE release"
+            echo "Pushing..."
+            git push
+            ;;
+        n|N)
+            echo "Aborting..."
+            return 1
+            ;;
+        *)
+            echo "Invalid option."
+            return 1
+            ;;
+    esac
+}
