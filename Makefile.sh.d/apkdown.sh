@@ -29,3 +29,5 @@ curl -fsSL https://f-droid.org/repo/com.smartpack.kernelmanager_177.apk \
 gh_apk Mahmud0808/Iconify Iconify Iconify
 gh_apk Mahmud0808/XMorphClock XMorphClock XMorphClock
 gh_apk d4rken-org/sdmaid-se SDMaid SDMaid
+gh_apk WSTxda/ViperFX-RE-Releases ViperFX-RE ViperFX-RE
+
